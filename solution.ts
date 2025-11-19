@@ -57,7 +57,7 @@ function printBookDetails(book: Book): void {
     console.log(`Title: ${book.title}, Author: ${book.author}, Published: ${book.publishedYear}, Available: ${availability}`);
 }
 
-function getUniqueValues<T extends string | number>(arr1: T[], arr2: T[]): T[] {
+/*function getUniqueValues<T extends string | number>(arr1: T[], arr2: T[]): T[] {
     const combined: T[] = [];
     for (const item of arr1) {
         if (!combined.includes(item)) {
@@ -70,7 +70,43 @@ function getUniqueValues<T extends string | number>(arr1: T[], arr2: T[]): T[] {
         }
     }
     return combined;
-} 
+} */ //Deprecated due to usage of .includes
+ 
+function getUniqueValues<T extends number | string>(
+    arr1: T[],
+    arr2: T[]   //Takes two arrays but with generics
+): T[] {
+    const result: T[] = [];
+    let resultIndex = 0; // Pointer strategy
+
+    // Lets check the exists but manually implemented exhaustive apporach
+    function exists(value: T): boolean {
+        for (let i = 0; i < resultIndex; i++) {
+            if (result[i] === value) return true;
+        }
+        return false;
+    }
+
+    // Do the arrays separately
+    for (let i = 0; i < arr1.length; i++) {
+        const value = arr1[i];
+        if (!exists(value)) {
+            result[resultIndex] = value; // pure indexing
+            resultIndex++;
+        }
+    }
+
+    for (let j = 0; j < arr2.length; j++) {
+        const value = arr2[j];
+        if (!exists(value)) {
+            result[resultIndex] = value; // pure indexing
+            resultIndex++;
+        }
+    }
+
+    return result;
+}
+
 
 interface Product {
     name: string;
